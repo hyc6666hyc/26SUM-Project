@@ -1,0 +1,8 @@
+{
+  "Engineer": {"skill": "emergency_repair", "cooldown": 3, "description": "紧急抢修：显著恢复一处设施。"},
+  "Doctor": {"skill": "full_diagnosis", "cooldown": 3, "description": "全面诊疗：治疗一名玩家。"},
+  "Guard": {"skill": "secret_monitoring", "cooldown": 2, "description": "秘密监控：查看目标上一天的行动类型。"},
+  "Trader": {"skill": "resource_exchange", "cooldown": 2, "description": "资源置换：以更高效率转换个人资源。"},
+  "Researcher": {"skill": "risk_forecast", "cooldown": 3, "description": "风险预测：获得下一事件的模糊提示。"}
+}
+

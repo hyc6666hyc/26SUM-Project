@@ -1,0 +1,11 @@
+player_count: 6
+human_count: 0
+total_days: 6
+enable_saboteur: true
+random_seed: 42
+normal_agent_model: qwen3.6-flash
+strategy_agent_model: qwen3.7-plus
+review_model: qwen3.7-plus
+auto_advance_delay: 0.2
+max_steps: 200
+

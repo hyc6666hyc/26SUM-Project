@@ -1,0 +1,39 @@
+# Secrets and local environment files
+.env
+.env.*
+!.env.example
+
+# Python virtual environments
+.venv/
+venv/
+env/
+
+# Python caches and build artifacts
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.test-deps/
+
+# Test and coverage output
+.coverage
+coverage.xml
+htmlcov/
+
+# Runtime saves, logs, and generated work files
+data/saves/
+output/
+outputs/
+work/
+*.log
+
+# Editor and operating-system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+Desktop.ini

@@ -1,0 +1,62 @@
+{
+  "Engineer": [
+    {
+      "id": "engineer_repair",
+      "description": "至少修复 2 次设施，且游戏结束时 energy >= 15。",
+      "conditions": [
+        {"metric": "repair_count", "operator": ">=", "value": 2},
+        {"metric": "world.energy", "operator": ">=", "value": 15}
+      ]
+    }
+  ],
+  "Doctor": [
+    {
+      "id": "doctor_survival",
+      "description": "至少 4 名玩家仍在场，且游戏结束时 medicine >= 3。",
+      "conditions": [
+        {"metric": "world.present_players", "operator": ">=", "value": 4},
+        {"metric": "world.medicine", "operator": ">=", "value": 3}
+      ]
+    }
+  ],
+  "Guard": [
+    {
+      "id": "guard_protection",
+      "description": "成功阻止一次破坏，并参与驱逐真正的破坏者。",
+      "conditions": [
+        {"metric": "prevented_sabotage", "operator": ">=", "value": 1},
+        {"metric": "voted_true_saboteur", "operator": ">=", "value": 1}
+      ]
+    }
+  ],
+  "Trader": [
+    {
+      "id": "trader_deals",
+      "description": "至少完成 3 次交易，且个人资源价值最高。",
+      "conditions": [
+        {"metric": "trades_completed", "operator": ">=", "value": 3},
+        {"metric": "world.personal_resource_rank", "operator": "==", "value": 1}
+      ]
+    }
+  ],
+  "Researcher": [
+    {
+      "id": "researcher_analysis",
+      "description": "成功分析 3 个事件，并制作至少 2 个特殊道具。",
+      "conditions": [
+        {"metric": "events_analyzed", "operator": ">=", "value": 3},
+        {"metric": "craft_count", "operator": ">=", "value": 2}
+      ]
+    }
+  ],
+  "SABOTEUR": [
+    {
+      "id": "saboteur_damage",
+      "description": "秘密干扰至少 3 次，并使任一核心设施耐久度降至 25% 以下。",
+      "conditions": [
+        {"metric": "sabotage_count", "operator": ">=", "value": 3},
+        {"metric": "lowest_sabotaged_facility_durability", "operator": "<=", "value": 25}
+      ]
+    }
+  ]
+}
