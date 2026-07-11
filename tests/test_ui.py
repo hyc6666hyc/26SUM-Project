@@ -42,7 +42,9 @@ def test_theme_keeps_sidebar_reopen_control_available() -> None:
     from ui.theme import CSS
 
     assert '[data-testid="stHeader"] { background: transparent; }' in CSS
-    assert '[data-testid="stToolbar"], #MainMenu, footer { display: none !important; }' in CSS
+    assert '[data-testid="stToolbarActions"]' in CSS
+    assert '[data-testid="stAppDeployButton"]' in CSS
+    assert '[data-testid="stToolbar"],' not in CSS
     assert '[data-testid="stHeader"], #MainMenu' not in CSS
 
 

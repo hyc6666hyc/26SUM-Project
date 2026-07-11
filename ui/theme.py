@@ -24,7 +24,9 @@ html, body, [data-testid="stAppViewContainer"] {
   color: var(--text);
 }
 [data-testid="stHeader"] { background: transparent; }
-[data-testid="stToolbar"], #MainMenu, footer { display: none !important; }
+[data-testid="stToolbarActions"], [data-testid="stAppDeployButton"], #MainMenu, footer {
+  display: none !important;
+}
 [data-testid="stMainBlockContainer"] { max-width: 1480px; padding-top: 1.2rem; }
 [data-testid="stSidebar"] {
   background: rgba(5, 14, 18, .96);
