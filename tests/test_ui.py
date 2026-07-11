@@ -38,6 +38,14 @@ def test_streamlit_start_and_ai_dashboard() -> None:
     assert "单步推进" in dashboard_labels
 
 
+def test_theme_keeps_sidebar_reopen_control_available() -> None:
+    from ui.theme import CSS
+
+    assert '[data-testid="stHeader"] { background: transparent; }' in CSS
+    assert '[data-testid="stToolbar"], #MainMenu, footer { display: none !important; }' in CSS
+    assert '[data-testid="stHeader"], #MainMenu' not in CSS
+
+
 def test_human_can_reach_action_stage_from_main_page() -> None:
     from streamlit.testing.v1 import AppTest
 

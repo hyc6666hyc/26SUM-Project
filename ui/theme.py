@@ -23,7 +23,8 @@ html, body, [data-testid="stAppViewContainer"] {
     linear-gradient(150deg, #050a0d 0%, #09151a 52%, #05090c 100%);
   color: var(--text);
 }
-[data-testid="stHeader"], #MainMenu, footer { display: none !important; }
+[data-testid="stHeader"] { background: transparent; }
+[data-testid="stToolbar"], #MainMenu, footer { display: none !important; }
 [data-testid="stMainBlockContainer"] { max-width: 1480px; padding-top: 1.2rem; }
 [data-testid="stSidebar"] {
   background: rgba(5, 14, 18, .96);
