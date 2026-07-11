@@ -13,6 +13,7 @@
 - 私人目标、阵营胜负、个人结果、积分和基础赛后摘要。
 - 玩家绑定的权限视图；LLM 只接收本人的公开/私人视图，不接收完整 `GameState`。
 - 基于 JSON 的完整存档/恢复、公开回放和按天时间线。
+- Streamlit 访客可在当前浏览器会话中填写自己的 API Key、OpenAI 兼容 Base URL 和模型 ID；不写入存档或仓库。
 - 无 API Key 时使用有限步骤的规则 Bot；模型调用或 JSON 校验失败时自动 fallback。
 - Streamlit 开始页支持 AI 自动对局和真人参与两种模式。
 - 游戏规则弹窗在开始页和进入对局后始终可访问。
@@ -86,6 +87,8 @@ REVIEW_MODEL=qwen3.7-plus
 ```
 
 所有模型调用统一经过 `services/llm_client.py`。客户端启用超时、有限重试、Pydantic JSON 校验、一次格式修复和规则 Bot fallback。
+
+网页开始页也允许每位访客输入自己的 API Key、HTTPS Base URL 和模型 ID。这些值仅存在当前 Streamlit 会话的内存中，优先于服务器环境变量；不填写时才使用服务器配置。
 
 ## 启动与演示
 

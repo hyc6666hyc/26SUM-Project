@@ -6,6 +6,7 @@ import pytest
 
 
 streamlit = pytest.importorskip("streamlit")
+from streamlit.proto.TextInput_pb2 import TextInput
 
 
 def test_streamlit_start_and_ai_dashboard() -> None:
@@ -24,6 +25,12 @@ def test_streamlit_start_and_ai_dashboard() -> None:
         for item in app.caption
     )
 
+    app.toggle(key="setup_use_llm").set_value(True).run()
+    assert app.text_input(key="setup_llm_api_key").proto.type == TextInput.PASSWORD
+    assert app.text_input(key="setup_llm_base_url")
+    assert app.text_input(key="setup_llm_model")
+
+    app.toggle(key="setup_use_llm").set_value(False).run()
     app.button(key="start_ai").click().run()
     assert not app.exception
     dashboard_labels = [button.label for button in app.button]

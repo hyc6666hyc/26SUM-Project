@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from urllib.parse import urlparse
 
 from agents.human_player import HumanPlayer
 from agents.llm_agent import LLMAgent
@@ -63,17 +64,34 @@ def build_game_session(
     enable_saboteur: bool = True,
     use_llm: bool = False,
     llm_agents: int = 1,
+    llm_api_key: str | None = None,
+    llm_base_url: str | None = None,
+    llm_model: str | None = None,
     auto_advance_delay: float = 0.8,
 ) -> GameSession:
     """Construct a pure-AI or one-human match without importing Streamlit."""
     if mode not in {"ai", "human"}:
         raise ValueError("mode 必须为 ai 或 human")
+    model = (llm_model or "").strip()
+    if use_llm and not model:
+        raise ValueError("请填写模型名称")
+    base_url = (llm_base_url or "").strip()
+    if use_llm and base_url:
+        parsed_url = urlparse(base_url)
+        if parsed_url.scheme != "https" or not parsed_url.netloc:
+            raise ValueError("Base URL 必须是有效的 HTTPS 地址")
+        if parsed_url.username or parsed_url.password:
+            raise ValueError("Base URL 不能包含用户名或密码")
+
     config = GameConfig(
         player_count=player_count,
         human_count=1 if mode == "human" else 0,
         total_days=total_days,
         enable_saboteur=enable_saboteur,
         random_seed=random_seed,
+        normal_agent_model=model or "qwen3.6-flash",
+        strategy_agent_model=model or "qwen3.7-plus",
+        review_model=model or "qwen3.7-plus",
         auto_advance_delay=auto_advance_delay,
         max_steps=max(200, total_days * 7),
     )
@@ -83,9 +101,12 @@ def build_game_session(
     client = None
     llm_player_ids: list[str] = []
     if use_llm:
-        client = LLMClient()
+        client = LLMClient(
+            api_key=(llm_api_key or "").strip() or None,
+            base_url=base_url or None,
+        )
         if not client.available:
-            raise ValueError("未在 .env 中配置 DASHSCOPE_API_KEY")
+            raise ValueError("请填写 API Key，或由服务器管理员配置 DASHSCOPE_API_KEY")
         count = max(1, min(llm_agents, len(ai_ids)))
         llm_player_ids = ai_ids[:count]
         llm_agent = LLMAgent(client)

@@ -16,6 +16,9 @@ def _init_start_defaults() -> None:
         "setup_saboteur": True,
         "setup_use_llm": False,
         "setup_llm_agents": 1,
+        "setup_llm_api_key": "",
+        "setup_llm_base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "setup_llm_model": "qwen3.6-flash",
         "setup_delay": 0.8,
     }
     for key, value in defaults.items():
@@ -32,6 +35,9 @@ def _start_game(mode: str) -> None:
             enable_saboteur=bool(st.session_state.setup_saboteur),
             use_llm=bool(st.session_state.setup_use_llm),
             llm_agents=int(st.session_state.setup_llm_agents),
+            llm_api_key=str(st.session_state.setup_llm_api_key),
+            llm_base_url=str(st.session_state.setup_llm_base_url),
+            llm_model=str(st.session_state.setup_llm_model),
             auto_advance_delay=float(st.session_state.setup_delay),
         )
     except ValueError as exc:
@@ -112,7 +118,7 @@ def render_start_page() -> None:
         with x1:
             st.toggle("启用隐藏破坏者", key="setup_saboteur")
         with x2:
-            st.toggle("使用百炼 LLM", key="setup_use_llm")
+            st.toggle("使用 LLM", key="setup_use_llm")
         with x3:
             st.session_state.setup_llm_agents = min(
                 int(st.session_state.setup_llm_agents),
@@ -126,17 +132,47 @@ def render_start_page() -> None:
                 disabled=not st.session_state.setup_use_llm,
             )
         if st.session_state.setup_use_llm:
-            if LLMClient().available:
-                st.success("已检测到百炼 API Key。建议开发阶段只启用 1 个 LLM Agent。")
+            st.markdown("##### LLM 连接")
+            key_col, url_col, model_col = st.columns(3)
+            with key_col:
+                st.text_input(
+                    "API Key",
+                    key="setup_llm_api_key",
+                    type="password",
+                    autocomplete="off",
+                    help="仅保存在当前浏览器会话，不写入存档或配置文件。",
+                    icon=":material/key:",
+                )
+            with url_col:
+                st.text_input(
+                    "Base URL",
+                    key="setup_llm_base_url",
+                    placeholder="https://api.example.com/v1",
+                    help="填写 OpenAI 兼容接口的 HTTPS Base URL。",
+                    icon=":material/link:",
+                )
+            with model_col:
+                st.text_input(
+                    "模型名称",
+                    key="setup_llm_model",
+                    placeholder="例如 qwen3.6-flash",
+                    help="必须是该接口账号可访问的模型 ID。",
+                    icon=":material/model_training:",
+                )
+            if str(st.session_state.setup_llm_api_key).strip():
+                st.success("将使用你输入的 API 配置，仅对当前会话生效。")
+            elif LLMClient().available:
+                st.success("未输入个人 Key，将使用服务器已配置的 LLM API。")
             else:
-                st.warning("未检测到 DASHSCOPE_API_KEY，将无法启动 LLM 模式。")
+                st.warning("请填写 API Key、Base URL 和模型名称。")
+            st.caption("仅支持 OpenAI 兼容的 HTTPS 接口；请确认服务商的模型 ID 和计费规则。")
 
-    api_ready = LLMClient().available
+    api_ready = bool(str(st.session_state.setup_llm_api_key).strip()) or LLMClient().available
     status_cols = st.columns([1, 1, 1])
     with status_cols[0]:
         st.markdown('<div class="sc-status">● 规则引擎就绪</div>', unsafe_allow_html=True)
     with status_cols[1]:
-        text = "百炼 API Key 已配置" if api_ready else "规则 Bot 可离线运行"
+        text = "LLM API 已配置" if api_ready else "规则 Bot 可离线运行"
         st.markdown(f'<div class="sc-status">● {text}</div>', unsafe_allow_html=True)
     with status_cols[2]:
         st.markdown('<div class="sc-status">MVP v1.0</div>', unsafe_allow_html=True)

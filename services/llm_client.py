@@ -126,14 +126,16 @@ class LLMClient:
         except ImportError as exc:  # pragma: no cover - dependency installation error
             raise RuntimeError("缺少 openai，请执行 pip install -r requirements.txt") from exc
         client = OpenAI(api_key=self.api_key, base_url=self.base_url, timeout=self.timeout)
-        response = client.chat.completions.create(
-            model=model,
-            messages=messages,  # type: ignore[arg-type]
-            response_format={"type": "json_object"},
-            extra_body={"enable_thinking": False},
-            max_completion_tokens=2000,
-            temperature=0.4,
-        )
+        request_options = {
+            "model": model,
+            "messages": messages,
+            "response_format": {"type": "json_object"},
+            "max_completion_tokens": 2000,
+            "temperature": 0.4,
+        }
+        if "dashscope.aliyuncs.com" in self.base_url.lower():
+            request_options["extra_body"] = {"enable_thinking": False}
+        response = client.chat.completions.create(**request_options)  # type: ignore[arg-type]
         content = response.choices[0].message.content
         if not content:
             raise ValueError("模型返回空内容")

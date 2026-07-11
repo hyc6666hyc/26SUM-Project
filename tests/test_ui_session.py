@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import pytest
+
 from game.enums import GamePhase
 from ui.session import build_game_session
 
@@ -50,3 +52,40 @@ def test_human_public_message_triggers_bounded_ai_discussion() -> None:
 
     assert response_count == 2
     assert len(public_messages) == 3
+
+
+def test_llm_ui_session_accepts_per_session_openai_compatible_config() -> None:
+    session = build_game_session(
+        mode="ai",
+        player_count=3,
+        total_days=1,
+        use_llm=True,
+        llm_agents=1,
+        llm_api_key="test-user-key",
+        llm_base_url="https://api.example.com/v1",
+        llm_model="example-chat-model",
+    )
+
+    assert session.llm_client is not None
+    assert session.llm_client.api_key == "test-user-key"
+    assert session.llm_client.base_url == "https://api.example.com/v1"
+    assert session.engine.config.normal_agent_model == "example-chat-model"
+    assert session.engine.config.strategy_agent_model == "example-chat-model"
+    assert session.llm_player_ids == ["player_1"]
+
+
+@pytest.mark.parametrize(
+    "base_url",
+    ["http://api.example.com/v1", "not-a-url", "https://user:pass@example.com/v1"],
+)
+def test_llm_ui_session_rejects_unsafe_base_url(base_url: str) -> None:
+    with pytest.raises(ValueError, match="Base URL"):
+        build_game_session(
+            mode="ai",
+            player_count=3,
+            total_days=1,
+            use_llm=True,
+            llm_api_key="test-user-key",
+            llm_base_url=base_url,
+            llm_model="example-chat-model",
+        )
